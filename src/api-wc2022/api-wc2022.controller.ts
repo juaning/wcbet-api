@@ -7,7 +7,11 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ApiWc2022Service } from './api-wc2022.service';
-import { IMatchDefinition, ITeamDefinition } from './api-wc2022.interface';
+import {
+  IMatchDefinition,
+  IStandingDefinition,
+  ITeamDefinition,
+} from './api-wc2022.interface';
 import { HttpServiceInterceptor } from './api-wc2022-interceptor.service';
 
 @UseInterceptors(HttpServiceInterceptor)
@@ -19,6 +23,10 @@ export class ApiWc2022Controller {
   public getAllTeams(): Observable<Array<ITeamDefinition>> {
     return this.apiWC2022Service.getAllTeams();
   }
+
+  /**
+   * Match related endpoints
+   */
 
   @Get('/matches')
   public getAllMatches(): Observable<Array<IMatchDefinition>> {
@@ -37,5 +45,22 @@ export class ApiWc2022Controller {
     @Param('id', ParseIntPipe) id: number,
   ): Observable<IMatchDefinition> {
     return this.apiWC2022Service.getMatchById(id);
+  }
+
+  /**
+   * Standings related endpoints
+   */
+
+  @Get('/standings')
+  public getAllStandings(): Observable<Array<IStandingDefinition>> {
+    return this.apiWC2022Service.getAllStandings();
+  }
+
+  @Get('/standings/:group')
+  public getStandingsByGroup(
+    @Param('group') group: string,
+  ): Observable<IStandingDefinition> {
+    // Group letter should be capital
+    return this.apiWC2022Service.getStandingsByGroup(group.toLocaleUpperCase());
   }
 }
