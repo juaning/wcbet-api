@@ -11,12 +11,6 @@ export interface ITeamDefinition {
   id: string;
 }
 
-export interface IAllTeamsResponse {
-  status: `${ApiStatusResponseEnum}`; // ApiStatusResponseEnum.Success | ApiStatusResponseEnum.Error
-  message?: string;
-  data?: Array<ITeamDefinition>;
-}
-
 export interface IMatchDefinition {
   _id: string;
   away_score: number;
@@ -41,14 +35,40 @@ export interface IMatchDefinition {
   home_flag: string;
   away_flag: string;
 }
+
+export interface IStandingTeamDefinition {
+  team_id: string;
+  mp: string;
+  w: string;
+  l: string;
+  pts: string;
+  gf: string;
+  ga: string;
+  gd: string;
+  name_fa: string;
+  name_en: string;
+  flag: string;
+}
+
+export interface IStandingDefinition {
+  group: string;
+  teams: Array<IStandingTeamDefinition>;
+}
+
+export interface IAllTeamsResponse {
+  status: `${ApiStatusResponseEnum}`; // ApiStatusResponseEnum.Success | ApiStatusResponseEnum.Error
+  message?: string;
+  data?: Array<ITeamDefinition>;
+}
+
 export interface IMatchesResponse {
   status: `${ApiStatusResponseEnum}`; // ApiStatusResponseEnum.Success | ApiStatusResponseEnum.Error
   message?: string;
   data?: Array<IMatchDefinition>;
 }
 
-export interface IMatchResponse {
+export interface IStandingsResponse {
   status: `${ApiStatusResponseEnum}`; // ApiStatusResponseEnum.Success | ApiStatusResponseEnum.Error
   message?: string;
-  data?: IMatchDefinition;
+  data?: Array<IStandingDefinition>;
 }
