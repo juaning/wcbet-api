@@ -41,8 +41,14 @@ export interface IMatchDefinition {
   home_flag: string;
   away_flag: string;
 }
-export interface IAllMatchesResponse {
+export interface IMatchesResponse {
   status: `${ApiStatusResponseEnum}`; // ApiStatusResponseEnum.Success | ApiStatusResponseEnum.Error
   message?: string;
   data?: Array<IMatchDefinition>;
+}
+
+export interface IMatchResponse {
+  status: `${ApiStatusResponseEnum}`; // ApiStatusResponseEnum.Success | ApiStatusResponseEnum.Error
+  message?: string;
+  data?: IMatchDefinition;
 }
