@@ -11,8 +11,4 @@ describe('ApiWc2022Controller', () => {
 
     controller = module.get<ApiWc2022Controller>(ApiWc2022Controller);
   });
-
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
 });

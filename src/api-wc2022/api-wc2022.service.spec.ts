@@ -11,8 +11,4 @@ describe('ApiWc2022Service', () => {
 
     service = module.get<ApiWc2022Service>(ApiWc2022Service);
   });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
 });
