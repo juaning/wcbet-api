@@ -37,3 +37,6 @@ lerna-debug.log*
 # Env files
 .env
 .env.*
+
+# scripts
+/src/scripts/generate-ormconfig.ts
