@@ -4,11 +4,13 @@ import { ApiWc2022Module } from './api-wc2022/api-wc2022.module';
 import { configService } from './config/config.service';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     ApiWc2022Module,
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
+    UserModule,
   ],
   controllers: [UserController],
   providers: [UserService],
