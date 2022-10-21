@@ -15,4 +15,10 @@ export class UserService {
       .find()
       .then((users) => users.map((user) => UserDTO.fromEntity(user)));
   }
+
+  public async create(dto: UserDTO, userId: string): Promise<UserDTO> {
+    return this.repo
+      .save(dto.toEntity(userId))
+      .then((e) => UserDTO.fromEntity(e));
+  }
 }

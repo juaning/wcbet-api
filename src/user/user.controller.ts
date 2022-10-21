@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { UserDTO } from './user.dto';
 import { UserService } from './user.service';
@@ -16,5 +16,13 @@ export class UserController {
   })
   public async getAll(): Promise<UserDTO[]> {
     return await this.serv.getAll();
+  }
+
+  @Post()
+  public async post(
+    @Body() dto: UserDTO,
+    @Body('userId') userId: string,
+  ): Promise<UserDTO> {
+    return this.serv.create(dto, userId);
   }
 }
