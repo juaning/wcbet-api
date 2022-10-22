@@ -44,8 +44,6 @@ class ConfigService {
   }
 }
 
-console.log(`env: ${process.env.POSTGRES_HOST}`);
-
 const configService = new ConfigService(process.env).ensureValues([
   'POSTGRES_HOST',
   'POSTGRES_PORT',

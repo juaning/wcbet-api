@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserMatchBet } from 'src/model/userMatchBet.entity';
-import { User } from 'src/model/user.entity';
+import { User } from 'src/user.decorator';
 import { UserMatchBetDTO } from './user-match-bet.dto';
 
 @Injectable()
@@ -16,6 +16,12 @@ export class UserMatchBetService {
     return await this.repo
       .find()
       .then((bets) => bets.map((bet) => UserMatchBetDTO.fromEntity(bet)));
+  }
+
+  public async getMatchBetByUser(user: User): Promise<UserMatchBetDTO[]> {
+    return await (
+      await this.repo.find({ where: { createdBy: user.id } })
+    ).map((bet) => UserMatchBetDTO.fromEntity(bet));
   }
 
   public async create(

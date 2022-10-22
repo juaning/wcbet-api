@@ -6,6 +6,7 @@ import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { UserMatchBetModule } from './user-match-bet/user-match-bet.module';
+import { AuthzModule } from './authz/authz.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UserMatchBetModule } from './user-match-bet/user-match-bet.module';
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     UserModule,
     UserMatchBetModule,
+    AuthzModule,
   ],
   controllers: [UserController],
   providers: [UserService],

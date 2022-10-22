@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID } from 'class-validator';
-import { User } from 'src/model/user.entity';
+import { User } from 'src/user.decorator';
 import { UserMatchBet } from 'src/model/userMatchBet.entity';
 
 export class UserMatchBetDTO implements Readonly<UserMatchBetDTO> {
