@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { UserMatchBet } from 'src/model/userMatchBet.entity';
 import { UserDTO } from './user.dto';
 import { UserService } from './user.service';
 
@@ -24,5 +25,10 @@ export class UserController {
     @Body('userId') userId: string,
   ): Promise<UserDTO> {
     return this.serv.create(dto, userId);
+  }
+
+  @Get('matchBets')
+  getMatchBets(@Body('userId') userId: string): Promise<UserMatchBet[]> {
+    return this.serv.getMatchBetsOfUser(userId);
   }
 }
