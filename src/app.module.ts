@@ -5,12 +5,14 @@ import { configService } from './config/config.service';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
+import { UserMatchBetModule } from './user-match-bet/user-match-bet.module';
 
 @Module({
   imports: [
     ApiWc2022Module,
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     UserModule,
+    UserMatchBetModule,
   ],
   controllers: [UserController],
   providers: [UserService],
