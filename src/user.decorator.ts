@@ -6,6 +6,7 @@ interface RawUser {
   exp: number;
   azp: string;
   scope: string;
+  'wc-bet-api-email': string;
 }
 
 export interface User extends RawUser {

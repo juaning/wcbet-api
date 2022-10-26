@@ -9,7 +9,12 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
-  app.useGlobalPipes(new ValidationPipe({ disableErrorMessages: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      disableErrorMessages: process.env.ENV !== 'dev',
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('WCBet API')

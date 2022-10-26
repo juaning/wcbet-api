@@ -1,10 +1,24 @@
 import * as _ from 'lodash';
 import wcBetDatasource from '../config/typeorm.config';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/model/user.entity';
-import { UserDTO } from 'src/user/user.dto';
+import { User } from '../user.decorator';
+import { UserMatchBetService } from '../user-match-bet/user-match-bet.service';
+import { UserMatchBet } from '../model/userMatchBet.entity';
+import { UserMatchBetDTO } from '../user-match-bet/user-match-bet.dto';
 
 async function run() {
+  const seedUser: User = {
+    id: 'seed-user',
+    email: 'seed@user.com',
+    iss: 'iss',
+    sub: 'seed-user',
+    aud: ['1', '2'],
+    iat: 1,
+    exp: 1,
+    azp: 'azp',
+    scope: 'seed test',
+    'wc-bet-api-email': 'seed@user.com',
+  };
+
   const seedId = Date.now()
     .toString()
     .split('')
@@ -12,20 +26,22 @@ async function run() {
     .reduce((s, it, x) => (x > 3 ? s : (s += it)), '');
 
   const connection = await wcBetDatasource.initialize();
-  const userService = new UserService(connection.getRepository(User));
+  const userMatchBetService = new UserMatchBetService(
+    connection.getRepository(UserMatchBet),
+  );
 
   const work = _.range(1, 10)
     .map((n) =>
-      UserDTO.from({
-        username: `seed${seedId}-${n}`,
-        isPaid: true,
-        paidReceipt: `paid-receipt-${n}`,
+      UserMatchBetDTO.from({
+        matchId: `match-seed${seedId}-${n}`,
+        awayScore: n,
+        homeScore: 10 - n,
       }),
     )
     .map((dto) =>
-      userService
-        .create(dto, 'seed-user')
-        .then((r) => (console.log('done ->', r.username), r)),
+      userMatchBetService
+        .create(dto, seedUser)
+        .then((r) => (console.log('done ->', r.matchId), r)),
     );
   return await Promise.all(work);
 }

@@ -5,6 +5,7 @@ import {
   ApiTags,
   ApiOkResponse,
   ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { User } from 'src/user.decorator';
 import { UserMatchBetDTO } from './user-match-bet.dto';
@@ -15,16 +16,7 @@ import { UserMatchBetService } from './user-match-bet.service';
 export class UserMatchBetController {
   constructor(private serv: UserMatchBetService) {}
 
-  // @Get()
-  // @ApiOkResponse({
-  //   description: 'Users match bets retrieved successfully.',
-  //   type: UserMatchBetDTO,
-  //   isArray: true,
-  // })
-  // public async getAll(): Promise<UserMatchBetDTO[]> {
-  //   return await this.serv.getAll();
-  // }
-
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiOkResponse({
     description: 'User match bets retrieved successfully.',
@@ -44,6 +36,9 @@ export class UserMatchBetController {
   })
   @ApiUnauthorizedResponse({
     description: 'User not authorizaed.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request. Something is malformed',
   })
   @Post()
   public async post(

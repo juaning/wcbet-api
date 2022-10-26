@@ -1,12 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID } from 'class-validator';
+import { IsString } from 'class-validator';
 import { User } from 'src/user.decorator';
 import { UserMatchBet } from 'src/model/userMatchBet.entity';
 
 export class UserMatchBetDTO implements Readonly<UserMatchBetDTO> {
-  @ApiProperty({ type: String, required: true })
-  @IsUUID()
-  id: string;
   @ApiProperty({ type: String, required: true })
   @IsString()
   matchId: string;
@@ -17,7 +14,6 @@ export class UserMatchBetDTO implements Readonly<UserMatchBetDTO> {
 
   public static from(dto: Partial<UserMatchBetDTO>) {
     const bet = new UserMatchBetDTO();
-    bet.id = dto.id;
     bet.matchId = dto.matchId;
     bet.awayScore = dto.awayScore;
     bet.homeScore = dto.homeScore;
@@ -26,7 +22,6 @@ export class UserMatchBetDTO implements Readonly<UserMatchBetDTO> {
 
   public static fromEntity(entity: UserMatchBet) {
     return this.from({
-      id: entity.id,
       matchId: entity.matchId,
       awayScore: entity.awayScore,
       homeScore: entity.homeScore,
@@ -35,7 +30,6 @@ export class UserMatchBetDTO implements Readonly<UserMatchBetDTO> {
 
   public toEntity(user: User = null) {
     const bet = new UserMatchBet();
-    bet.id = this.id;
     bet.matchId = this.matchId;
     bet.awayScore = this.awayScore;
     bet.homeScore = this.homeScore;
