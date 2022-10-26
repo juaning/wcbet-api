@@ -1,6 +1,5 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { UserMatchBet } from './userMatchBet.entity';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
@@ -10,6 +9,4 @@ export class User extends BaseEntity {
   isPaid: boolean;
   @Column({ type: 'varchar', length: 300, nullable: true })
   paidReceipt: string | null;
-  @OneToMany(() => UserMatchBet, (userMatchBet) => userMatchBet.user)
-  matchBets: UserMatchBet[];
 }
