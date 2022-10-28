@@ -2,6 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
 import { User } from '../model/user.entity';
 import { UserMatchBet } from '../model/userMatchBet.entity';
+import { UserTeamBet } from 'src/model/userTeamBet.entity';
 
 config();
 
@@ -20,6 +21,6 @@ export default new DataSource({
   username: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
   database: POSTGRES_DATABASE,
-  entities: [User, UserMatchBet],
+  entities: [User, UserMatchBet, UserTeamBet],
   migrations: ['src/migrations/*.ts'],
 } as DataSourceOptions);

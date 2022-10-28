@@ -7,6 +7,7 @@ import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { UserMatchBetModule } from './user-match-bet/user-match-bet.module';
 import { AuthzModule } from './authz/authz.module';
+import { UserTeamBetModule } from './user-team-bet/user-team-bet.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthzModule } from './authz/authz.module';
     UserModule,
     UserMatchBetModule,
     AuthzModule,
+    UserTeamBetModule,
   ],
   controllers: [UserController],
   providers: [UserService],
