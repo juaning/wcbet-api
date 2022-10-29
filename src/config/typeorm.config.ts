@@ -2,7 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
 import { User } from '../model/user.entity';
 import { UserMatchBet } from '../model/userMatchBet.entity';
-import { UserTeamBet } from 'src/model/userTeamBet.entity';
+import { UserTeamBet } from '../model/userTeamBet.entity';
 
 config();
 
