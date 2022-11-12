@@ -7,4 +7,8 @@ export class UserTeamBet extends BaseEntity {
   teamId: string;
   @Column({ type: 'int' })
   instance: number;
+  @Column({ type: 'varchar', length: 300, nullable: true })
+  groupId: string | null;
+  @Column({ type: 'varchar', length: 300, nullable: true })
+  matchId: string | null;
 }

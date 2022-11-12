@@ -70,6 +70,43 @@ export class UserTeamBetController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({
+    description: 'User team bets fetched successfully',
+    type: UserTeamBetDTO,
+    isArray: true,
+  })
+  @ApiUnauthorizedResponse({ description: 'User not authorized.' })
+  @Get('group/:groupId')
+  public async getTeamBetsByGroupId(
+    @Param('groupId') groupId: string,
+    @User() user: User,
+  ): Promise<Array<UserTeamBetDTO>> {
+    try {
+      return this.serv.getTeamBetsByGroupId(groupId, user);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({
+    description: 'User team bet fetched successfully',
+    type: UserTeamBetDTO,
+  })
+  @ApiUnauthorizedResponse({ description: 'User not authorized.' })
+  @Get('match/:matchId')
+  public async getTeamBetByMatchId(
+    @Param('matchId') matchId: string,
+    @User() user: User,
+  ): Promise<UserTeamBetDTO> {
+    try {
+      return this.serv.getTeamBetByMatchId(matchId, user);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @ApiCreatedResponse({
     description: 'User Team Bet created.',
     type: UserTeamBetDTO,

@@ -36,6 +36,26 @@ export class UserTeamBetService {
     return UserTeamBetDTO.fromEntity(bet);
   }
 
+  public async getTeamBetsByGroupId(
+    groupId: string,
+    user: User,
+  ): Promise<Array<UserTeamBetDTO>> {
+    return await (
+      await this.repo.findBy({ createdBy: user.id, groupId: groupId })
+    ).map((bet: UserTeamBet) => UserTeamBetDTO.fromEntity(bet));
+  }
+
+  public async getTeamBetByMatchId(
+    matchId: string,
+    user: User,
+  ): Promise<UserTeamBetDTO> {
+    const bet = await this.repo.findOneBy({
+      createdBy: user.id,
+      matchId: matchId,
+    });
+    return UserTeamBetDTO.fromEntity(bet);
+  }
+
   public async getTeamBetByInstanceAndUser(
     instance: number,
     user: User,
