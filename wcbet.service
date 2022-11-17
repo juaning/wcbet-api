@@ -1,0 +1,13 @@
+[Unit]
+Description=WCBet API
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/home/wcbet/devel/wcbet-api/scripts/start-app.sh
+User=root
+
+[Install]
+WantedBy=multi-user.target
