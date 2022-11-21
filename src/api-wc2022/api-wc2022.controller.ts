@@ -27,8 +27,12 @@ export class ApiWc2022Controller {
     type: ITeamDefinition,
     isArray: true,
   })
-  public getAllTeams(): Observable<Array<ITeamDefinition>> {
-    return this.apiWC2022Service.getAllTeams();
+  public getAllTeams(): Promise<Array<ITeamDefinition>> {
+    try {
+      return this.apiWC2022Service.getAllTeams();
+    } catch (err) {
+      return err;
+    }
   }
 
   /**
@@ -41,8 +45,12 @@ export class ApiWc2022Controller {
     type: IMatchDefinition,
     isArray: true,
   })
-  public getAllMatches(): Observable<Array<IMatchDefinition>> {
-    return this.apiWC2022Service.getAllMatches();
+  public getAllMatches(): Promise<Array<IMatchDefinition>> {
+    try {
+      return this.apiWC2022Service.getAllMatches();
+    } catch (err) {
+      return err;
+    }
   }
 
   @Get('/matches/:day')
@@ -53,8 +61,12 @@ export class ApiWc2022Controller {
   })
   public getMatchesByDay(
     @Param('day', ParseIntPipe) day: number,
-  ): Observable<Array<IMatchDefinition>> {
-    return this.apiWC2022Service.getMatchesByMatchDay(day);
+  ): Promise<Array<IMatchDefinition>> {
+    try {
+      return this.apiWC2022Service.getMatchesByMatchDay(day);
+    } catch (err) {
+      return err;
+    }
   }
 
   @Get('/match/:id')
@@ -64,8 +76,12 @@ export class ApiWc2022Controller {
   })
   public getMatchById(
     @Param('id', ParseIntPipe) id: number,
-  ): Observable<IMatchDefinition> {
-    return this.apiWC2022Service.getMatchById(id);
+  ): Promise<IMatchDefinition> {
+    try {
+      return this.apiWC2022Service.getMatchById(id);
+    } catch (err) {
+      return err;
+    }
   }
 
   /**
@@ -78,8 +94,12 @@ export class ApiWc2022Controller {
     type: IStandingDefinition,
     isArray: true,
   })
-  public getAllStandings(): Observable<Array<IStandingDefinition>> {
-    return this.apiWC2022Service.getAllStandings();
+  public getAllStandings(): Promise<Array<IStandingDefinition>> {
+    try {
+      return this.apiWC2022Service.getAllStandings();
+    } catch (err) {
+      return err;
+    }
   }
 
   @Get('/standings/:group')
@@ -89,8 +109,14 @@ export class ApiWc2022Controller {
   })
   public getStandingsByGroup(
     @Param('group') group: string,
-  ): Observable<IStandingDefinition> {
+  ): Promise<IStandingDefinition> {
     // Group letter should be capital
-    return this.apiWC2022Service.getStandingsByGroup(group.toLocaleUpperCase());
+    try {
+      return this.apiWC2022Service.getStandingsByGroup(
+        group.toLocaleUpperCase(),
+      );
+    } catch (err) {
+      return err;
+    }
   }
 }

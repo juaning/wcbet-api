@@ -21,8 +21,8 @@ export class UserMatchBetService {
   ) {}
 
   private async hasGameStarted(matchId: string): Promise<boolean> {
-    const match: IMatchDefinition = await lastValueFrom(
-      this.apiWC2022Service.getMatchById(Number(matchId)),
+    const match: IMatchDefinition = await this.apiWC2022Service.getMatchById(
+      Number(matchId),
     );
 
     // We should check with current time, as matches could be save

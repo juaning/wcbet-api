@@ -1,97 +1,145 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { catchError, map, Observable, ObservableInput } from 'rxjs';
+import { Cache } from 'cache-manager';
 import {
-  IAllTeamsResponse,
   IMatchDefinition,
-  IMatchesResponse,
   IStandingDefinition,
-  IStandingsResponse,
   ITeamDefinition,
 } from './api-wc2022.interface';
 import { ApiStatusResponseEnum } from './common';
 
 @Injectable()
 export class ApiWc2022Service {
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
+  ) {}
 
-  private throwException(err): ObservableInput<any> {
-    throw new HttpException(err.response?.data, err.response?.status);
-  }
-
-  public getAllTeams(): Observable<Array<ITeamDefinition>> {
-    return this.httpService.get('/team').pipe(
-      map((resp): IAllTeamsResponse => resp.data),
-      map((data: IAllTeamsResponse): Array<ITeamDefinition> => {
-        if (data.status === ApiStatusResponseEnum.Success) return data.data;
-        throw new Error(data.message);
-      }),
-      catchError(this.throwException),
+  public async getAllTeams(): Promise<Array<ITeamDefinition>> {
+    // Check if we've got it stored
+    const cachedData = await this.cacheService.get<Array<ITeamDefinition>>(
+      'teams',
     );
+    if (cachedData) {
+      console.info('All teams from cache');
+      return cachedData;
+    }
+
+    // if not, we request and store in cache
+    const { data } = await this.httpService.axiosRef.get('/team');
+    if (data.status === ApiStatusResponseEnum.Success) {
+      await this.cacheService.set('teams', data.data, { ttl: 0 } as any);
+      console.info('All teams from 3rd party');
+      return data.data;
+    } else {
+      throw new Error(data.message);
+    }
   }
 
-  public getAllMatches(): Observable<Array<IMatchDefinition>> {
-    return this.httpService.get('/match').pipe(
-      map((resp): IMatchesResponse => resp.data),
-      map((data: IMatchesResponse): Array<IMatchDefinition> => {
-        if (data.status === ApiStatusResponseEnum.Success) return data.data;
-        throw new Error(data.message);
-      }),
-      catchError(this.throwException),
+  public async getAllMatches(): Promise<Array<IMatchDefinition>> {
+    const cachedData = await this.cacheService.get<Array<IMatchDefinition>>(
+      'allMatches',
     );
+    if (cachedData) {
+      console.info('All matches from cache');
+      return cachedData;
+    }
+
+    const { data } = await this.httpService.axiosRef.get('/match');
+    if (data.status === ApiStatusResponseEnum.Success) {
+      await this.cacheService.set('allMatches', data.data, { ttl: 60 } as any);
+      console.info('All matches from 3rd party');
+      return data.data;
+    } else {
+      throw new Error(data.message);
+    }
   }
 
-  public getMatchesByMatchDay(
+  public async getMatchesByMatchDay(
     day: number,
-  ): Observable<Array<IMatchDefinition>> {
-    return this.httpService.get(`/bymatch/${day}`).pipe(
-      map((resp): IMatchesResponse => resp.data),
-      map((data: IMatchesResponse): Array<IMatchDefinition> => {
-        if (data.status === ApiStatusResponseEnum.Success) return data.data;
-        throw new Error(data.message);
-      }),
-      catchError(this.throwException),
+  ): Promise<Array<IMatchDefinition>> {
+    const cachedData = await this.cacheService.get<Array<IMatchDefinition>>(
+      `matchday-${day}`,
     );
+    if (cachedData) {
+      console.log(`All matches for match day ${day} from cache`);
+      return cachedData;
+    }
+
+    const { data } = await this.httpService.axiosRef.get(`/bymatch/${day}`);
+    if (data.status === ApiStatusResponseEnum.Success) {
+      await this.cacheService.set(`matchday-${day}`, data.data, {
+        ttl: 300,
+      } as any);
+      console.log(`All matches for match day ${day} from 3rd party`);
+      return data.data;
+    } else {
+      throw new Error(data.message);
+    }
   }
 
-  public getMatchById(id: number): Observable<IMatchDefinition> {
-    return this.httpService.get(`/match/${id}`).pipe(
-      map((resp): IMatchesResponse => resp.data),
-      map((data: IMatchesResponse): IMatchDefinition => {
-        if (
-          data.status === ApiStatusResponseEnum.Success &&
-          data.data.length > 0
-        )
-          return data.data[0];
-        throw new Error(data.message);
-      }),
-      catchError(this.throwException),
+  public async getMatchById(id: number): Promise<IMatchDefinition> {
+    const cachedData = await this.cacheService.get<IMatchDefinition>(
+      `match:${id}`,
     );
+    if (cachedData) {
+      console.log(`Match data from cache`);
+      return cachedData;
+    }
+
+    const { data } = await this.httpService.axiosRef.get(`/match/${id}`);
+    if (data.status === ApiStatusResponseEnum.Success && data.data.length > 0) {
+      await this.cacheService.set(`match:${id}`, data.data[0], {
+        ttl: 60,
+      } as any);
+      console.log(`Match data from 3rd party`);
+      return data.data[0];
+    } else {
+      throw new Error(data.message);
+    }
   }
 
-  public getAllStandings(): Observable<Array<IStandingDefinition>> {
-    return this.httpService.get('/standings').pipe(
-      map((resp): IStandingsResponse => resp.data),
-      map((data: IStandingsResponse): Array<IStandingDefinition> => {
-        if (data.status === ApiStatusResponseEnum.Success) return data.data;
-        throw new Error(data.message);
-      }),
-      catchError(this.throwException),
+  public async getAllStandings(): Promise<Array<IStandingDefinition>> {
+    const cachedData = await this.cacheService.get<Array<IStandingDefinition>>(
+      'allStandings',
     );
+    if (cachedData) {
+      console.log('All standings from cache');
+      return cachedData;
+    }
+
+    const { data } = await this.httpService.axiosRef.get('/standings');
+    if (data.status === ApiStatusResponseEnum.Success) {
+      await this.cacheService.set('allStandings', data.data, {
+        ttl: 300,
+      } as any);
+      console.log('All standings from 3rd party');
+      return data.data;
+    } else {
+      throw new Error(data.message);
+    }
   }
 
-  public getStandingsByGroup(group: string): Observable<IStandingDefinition> {
-    return this.httpService.get(`/standings/${group}`).pipe(
-      map((resp): IStandingsResponse => resp.data),
-      map((data: IStandingsResponse): IStandingDefinition => {
-        if (
-          data.status === ApiStatusResponseEnum.Success &&
-          data.data.length > 0
-        )
-          return data.data[0];
-        throw new Error(data.message);
-      }),
-      catchError(this.throwException),
+  public async getStandingsByGroup(
+    group: string,
+  ): Promise<IStandingDefinition> {
+    const cachedData = await this.cacheService.get<IStandingDefinition>(
+      `groupStandings:${group}`,
     );
+    if (cachedData) {
+      console.log(`Group ${group} standings from cache`);
+      return cachedData;
+    }
+
+    const { data } = await this.httpService.axiosRef.get(`/standings/${group}`);
+    if (data.status === ApiStatusResponseEnum.Success && data.data.length > 0) {
+      await this.cacheService.set(`groupStandings:${group}`, data.data[0], {
+        ttl: 300,
+      } as any);
+      console.log(`Group ${group} standings from 3rd party`);
+      return data.data[0];
+    } else {
+      throw new Error(data.message);
+    }
   }
 }
