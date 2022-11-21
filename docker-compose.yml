@@ -55,7 +55,7 @@ services:
       - postgres
   redis:
     image: redis
-    container_name: local_redis
+    container_name: redis
     ports:
       - 6379:6379
     volumes:
