@@ -10,6 +10,12 @@ export const transformDateTimeToLocal = (datetime: string) =>
     qatarDateTimeZone,
   ).toLocal();
 
+export const canBetChamNGroups = (): boolean => {
+  const now = DateTime.now().toLocal();
+  const endOf1stRound = transformDateTimeToLocal('11/25/2022 15:00');
+  return now >= endOf1stRound;
+};
+
 export enum TeamBetTypeEnum {
   CHAMPION,
   THIRD_PLACE,

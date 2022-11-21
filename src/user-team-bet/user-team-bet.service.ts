@@ -5,7 +5,11 @@ import { DateTime } from 'luxon';
 import { UserTeamBet } from 'src/model/userTeamBet.entity';
 import { User } from 'src/user.decorator';
 import { CreateUserTeamBetDTO, UserTeamBetDTO } from './user-team-bet.dto';
-import { TeamBetTypeEnum, wcStartDateTime } from '../config/common';
+import {
+  canBetChamNGroups,
+  TeamBetTypeEnum,
+  wcStartDateTime,
+} from '../config/common';
 
 @Injectable()
 export class UserTeamBetService {
@@ -19,11 +23,6 @@ export class UserTeamBetService {
     @InjectRepository(UserTeamBet)
     private readonly repo: Repository<UserTeamBet>,
   ) {}
-
-  private hasWCStarted(): boolean {
-    const now = DateTime.now().toLocal();
-    return now >= wcStartDateTime;
-  }
 
   public async getTeamBetsByUser(user: User): Promise<UserTeamBetDTO[]> {
     return await (
@@ -72,7 +71,7 @@ export class UserTeamBetService {
     dto: CreateUserTeamBetDTO,
     user: User,
   ): Promise<UserTeamBetDTO> {
-    if (this.wcStartDeadline.includes(dto.instance) && this.hasWCStarted()) {
+    if (this.wcStartDeadline.includes(dto.instance) && canBetChamNGroups()) {
       // Check if date started
       throw new BadRequestException(
         'No se puede apostar una vez empezado el mundial',
@@ -86,7 +85,7 @@ export class UserTeamBetService {
   }
 
   public async update(dto: UserTeamBetDTO, user: User): Promise<UpdateResult> {
-    if (this.wcStartDeadline.includes(dto.instance) && this.hasWCStarted()) {
+    if (this.wcStartDeadline.includes(dto.instance) && canBetChamNGroups()) {
       throw new BadRequestException(
         'No se puede apostar una vez empezado el mundial',
       );
