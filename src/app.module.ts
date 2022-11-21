@@ -17,7 +17,7 @@ import { ConfigModule } from '@nestjs/config';
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
-      host: 'host.docker.internal',
+      host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
       ttl: 300,
     }),
