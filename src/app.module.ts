@@ -10,16 +10,18 @@ import { AuthzModule } from './authz/authz.module';
 import { UserTeamBetModule } from './user-team-bet/user-team-bet.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { ConfigModule } from '@nestjs/config';
+import { ttl5min } from './config/common';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     CacheModule.register({
       isGlobal: true,
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      ttl: 300,
+      // store: redisStore,
+      // host: process.env.REDIS_HOST,
+      // port: process.env.REDIS_PORT,
+      ttl: ttl5min,
+      max: 200, // keys in store
     }),
     ApiWc2022Module,
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),

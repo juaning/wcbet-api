@@ -38,3 +38,6 @@ export enum MatchTypeEnum {
 export const qatarDateTimeFormat = 'MM/d/yyyy HH:mm';
 export const qatarDateTimeZone = { zone: 'Asia/Qatar' };
 export const wcStartDateTime = transformDateTimeToLocal('11/20/2022 19:00');
+export const ttl1min = 60 * 1000;
+export const ttl5min = 300 * 1000;
+export const ttl24h = 1000 * 60 * 60 * 24;
