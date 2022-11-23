@@ -50,7 +50,8 @@ export const ttl1min = 60 * 1000;
 export const ttl5min = 300 * 1000;
 export const ttl24h = 1000 * 60 * 60 * 24;
 export const fifaFlag =
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Flag_of_FIFA.svg/1600px-Flag_of_FIFA.svg.png';
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Gay_Pride_Flag.svg/2560px-Gay_Pride_Flag.svg.png';
+// 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Flag_of_FIFA.svg/1600px-Flag_of_FIFA.svg.png';
 export const points = {
   group: {
     groupWinOrDraw: 10,
