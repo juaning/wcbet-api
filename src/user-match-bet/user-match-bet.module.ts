@@ -14,6 +14,6 @@ import { HttpModule } from '@nestjs/axios';
   ],
   controllers: [UserMatchBetController],
   providers: [UserMatchBetService],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, UserMatchBetService],
 })
 export class UserMatchBetModule {}

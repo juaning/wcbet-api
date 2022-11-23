@@ -6,7 +6,6 @@ import {
   UseGuards,
   Put,
   Param,
-  BadRequestException,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

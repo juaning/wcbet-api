@@ -8,6 +8,6 @@ import { UserTeamBetService } from './user-team-bet.service';
   imports: [TypeOrmModule.forFeature([UserTeamBet])],
   controllers: [UserTeamBetController],
   providers: [UserTeamBetService],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, UserTeamBetService],
 })
 export class UserTeamBetModule {}

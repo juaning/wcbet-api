@@ -67,6 +67,15 @@ export class UserTeamBetService {
     ).map((bet: UserTeamBet) => UserTeamBetDTO.fromEntity(bet));
   }
 
+  public async getTeamBetByInstanceAndUserId(
+    intance: number,
+    userId: string,
+  ): Promise<UserTeamBetDTO[]> {
+    return await (
+      await this.repo.findBy({ createdBy: userId, instance: intance })
+    ).map((bet: UserTeamBet) => UserTeamBetDTO.fromEntity(bet));
+  }
+
   public async create(
     dto: CreateUserTeamBetDTO,
     user: User,

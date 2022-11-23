@@ -2,7 +2,6 @@ import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { DateTime } from 'luxon';
-import { lastValueFrom } from 'rxjs';
 import { UserMatchBet } from 'src/model/userMatchBet.entity';
 import { User } from 'src/user.decorator';
 import { UserMatchBetDTO } from './user-match-bet.dto';
@@ -42,6 +41,12 @@ export class UserMatchBetService {
   public async getMatchBetByUser(user: User): Promise<UserMatchBetDTO[]> {
     return await (
       await this.repo.find({ where: { createdBy: user.id } })
+    ).map((bet) => UserMatchBetDTO.fromEntity(bet));
+  }
+
+  public async getMatchBetByUserId(id: string): Promise<UserMatchBetDTO[]> {
+    return await (
+      await this.repo.find({ where: { createdBy: id } })
     ).map((bet) => UserMatchBetDTO.fromEntity(bet));
   }
 

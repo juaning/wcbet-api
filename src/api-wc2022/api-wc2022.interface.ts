@@ -39,8 +39,8 @@ export class IMatchDefinition {
   home_scorers: Array<string>;
   @ApiProperty({ type: String })
   home_team_id: string;
-  @ApiProperty({ type: Number })
-  id: number;
+  @ApiProperty({ type: String })
+  id: string;
   @ApiProperty({ type: String })
   local_date: string;
   @ApiProperty({ type: Number })
