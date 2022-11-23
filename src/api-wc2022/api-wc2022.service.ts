@@ -48,7 +48,7 @@ export class ApiWc2022Service {
 
     const { data } = await this.httpService.axiosRef.get('/match');
     if (data.status === ApiStatusResponseEnum.Success) {
-      await this.cacheService.set('allMatches', data.data, ttl1min);
+      await this.cacheService.set('allMatches', data.data, ttl5min);
       console.info('All matches from 3rd party');
       return data.data;
     } else {
@@ -88,7 +88,7 @@ export class ApiWc2022Service {
 
     const { data } = await this.httpService.axiosRef.get(`/match/${id}`);
     if (data.status === ApiStatusResponseEnum.Success && data.data.length > 0) {
-      await this.cacheService.set(`match:${id}`, data.data[0], ttl1min);
+      await this.cacheService.set(`match:${id}`, data.data[0], ttl5min);
       console.log(`Match data from 3rd party`);
       return data.data[0];
     } else {
