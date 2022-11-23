@@ -128,7 +128,7 @@ export class UserService {
             pts: matchesPts,
             name: user.nickname || user.email,
             paid: user.app_metadata?.paid || false,
-            groups: user.app_metadata.groups || [],
+            groups: user.app_metadata?.groups || [],
             championFlag,
           };
         }),
