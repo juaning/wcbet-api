@@ -105,6 +105,7 @@ export class UserService {
       const users: Array<User0> = await authZero.getUsers();
       const usersWithMatchBets = await Promise.all(
         users.map(async (user) => {
+          if (user.app_metadata?.disabled) return;
           let championFlag = fifaFlag;
           // Fetch champion bet
           const championBet: UserTeamBetDTO[] =
@@ -142,7 +143,10 @@ export class UserService {
           };
         }),
       );
-      const sortedUsers = usersWithMatchBets.sort((a, b) => b.pts - a.pts);
+      const filteredUsers = usersWithMatchBets.filter(
+        (user) => user !== undefined,
+      );
+      const sortedUsers = filteredUsers.sort((a, b) => b.pts - a.pts);
       await this.cacheService.set('allUsers', sortedUsers, ttl5min);
       console.info('Got all users from API.');
       return sortedUsers;
