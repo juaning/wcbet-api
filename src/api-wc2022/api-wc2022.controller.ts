@@ -6,7 +6,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
-import { Observable } from 'rxjs';
 import { ApiWc2022Service } from './api-wc2022.service';
 import {
   IMatchDefinition,

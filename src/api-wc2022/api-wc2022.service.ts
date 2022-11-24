@@ -7,7 +7,7 @@ import {
   ITeamDefinition,
 } from './api-wc2022.interface';
 import { ApiStatusResponseEnum } from './common';
-import { ttl1min, ttl5min, ttl24h } from '../config/common';
+import { ttl5min, ttl24h } from '../config/common';
 
 @Injectable()
 export class ApiWc2022Service {
