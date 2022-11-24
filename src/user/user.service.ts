@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ManagementClient, User as User0 } from 'auth0';
+import { Cache } from 'cache-manager';
 import { User } from 'src/model/user.entity';
 import { UserDTO } from './user.dto';
 import * as dotenv from 'dotenv';
@@ -12,6 +13,7 @@ import {
   MatchTimeElapsedEnum,
   points,
   TeamBetTypeEnum,
+  ttl5min,
 } from '../config/common';
 import { UserMatchBetDTO } from '../user-match-bet/user-match-bet.dto';
 import { IMatchDefinition } from '../api-wc2022/api-wc2022.interface';
@@ -31,6 +33,7 @@ export class UserService {
 
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
+    @Inject(CACHE_MANAGER) private readonly cacheService: Cache,
   ) {}
 
   private calculateMatchesPoints(
@@ -85,6 +88,12 @@ export class UserService {
   }
 
   public async getAllUsers(): Promise<any> {
+    // Check if we've got data cached
+    const cachedData = await this.cacheService.get('allUsers');
+    if (cachedData) {
+      console.info('Got all users from cache.');
+      return cachedData;
+    }
     const authZero = new ManagementClient({
       domain: process.env.AUTH0_DOMAIN_M2M,
       clientId: process.env.AUTH0_CLIENTID_M2M,
@@ -133,7 +142,10 @@ export class UserService {
           };
         }),
       );
-      return usersWithMatchBets.sort((a, b) => b.pts - a.pts);
+      const sortedUsers = usersWithMatchBets.sort((a, b) => b.pts - a.pts);
+      await this.cacheService.set('allUsers', sortedUsers, ttl5min);
+      console.info('Got all users from API.');
+      return sortedUsers;
     } catch (err) {
       console.error(err);
     }

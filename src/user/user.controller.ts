@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  UseInterceptors,
-  CacheInterceptor,
-  CacheTTL,
-  CacheKey,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { HttpServiceInterceptor } from '../api-wc2022/api-wc2022-interceptor.service';
 import { UserDTO } from './user.dto';
@@ -33,9 +24,6 @@ export class UserController {
     return await this.serv.getAll();
   }
 
-  @UseInterceptors(CacheInterceptor)
-  @CacheKey('allUsers')
-  @CacheTTL(300)
   @Get('/all')
   public async getAllUsers(): Promise<any> {
     return await this.serv.getAllUsers();
