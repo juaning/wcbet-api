@@ -47,7 +47,7 @@ export class HttpServiceInterceptor implements NestInterceptor {
       async (err) => {
         const originalRequest = err.config;
         if (
-          (err.response.status === 401 || err.response.status === 403) &&
+          (err.response?.status === 401 || err.response?.status === 403) &&
           !originalRequest._retry
         ) {
           originalRequest._retry = true;
