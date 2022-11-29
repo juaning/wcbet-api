@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ManagementClient, User as User0 } from 'auth0';
 import { Cache } from 'cache-manager';
+import { DateTime } from 'luxon';
 import { User } from 'src/model/user.entity';
 import { UserDTO } from './user.dto';
 import * as dotenv from 'dotenv';
@@ -14,6 +15,9 @@ import {
   points,
   TeamBetTypeEnum,
   ttl5min,
+  lastMatchDateTimePerGroup,
+  transformDateTimeToLocal,
+  MatchTypeEnum,
 } from '../config/common';
 import { UserMatchBetDTO } from '../user-match-bet/user-match-bet.dto';
 import { IMatchDefinition } from '../api-wc2022/api-wc2022.interface';
@@ -60,19 +64,92 @@ export class UserService {
           match.away_score === match.home_score &&
           bet.awayScore === bet.homeScore;
         if (awayWon || homeWon || draw) {
-          newPts += points[match.type].groupWinOrDraw;
+          newPts += points[match.type].winOrDraw;
         }
         // Calculate result points
         const resultMatches =
           match.away_score === bet.awayScore &&
           match.home_score === bet.homeScore;
         if (resultMatches) {
-          newPts += points[match.type].groupResult;
+          newPts += points[match.type].result;
         }
         return newPts;
       }
       return pts;
     }, 0);
+  }
+
+  private async calculateGroupPoints(userId: string): Promise<number> {
+    const now = DateTime.now().toLocal();
+    const groups = await this.apiWC2022Service.getAllStandings();
+    const groupWinners =
+      await this.userTeamBetService.getTeamBetByInstanceAndUserId(
+        TeamBetTypeEnum.GROUP_WINNER,
+        userId,
+      );
+    const groupSeconds =
+      await this.userTeamBetService.getTeamBetByInstanceAndUserId(
+        TeamBetTypeEnum.GROUP_SECOND,
+        userId,
+      );
+    return groups.reduce((accPts, group) => {
+      let newPts = accPts;
+      // check if final match of group is done
+      const groupEndDate = transformDateTimeToLocal(
+        lastMatchDateTimePerGroup[group.group],
+      );
+      if (now >= groupEndDate) {
+        const sortedTeams = group.teams.sort(
+          (a, b) => Number(b.pts) - Number(a.pts),
+        );
+        const betWinner = groupWinners.find(
+          (winner) => winner.teamId === sortedTeams[0].team_id,
+        );
+        const betSecond = groupSeconds.find(
+          (second) => second.teamId === sortedTeams[1].team_id,
+        );
+        const betWinnerInSecond = groupSeconds.find(
+          (second) => second.teamId === sortedTeams[0].team_id,
+        );
+        const betSecondInFirst = groupWinners.find(
+          (winner) => winner.teamId === sortedTeams[1].team_id,
+        );
+        if (betWinner) {
+          newPts += points[MatchTypeEnum.GROUP].advances;
+          console.log(
+            `Group ${group.group} winner points: ${
+              points[MatchTypeEnum.GROUP].advances
+            }`,
+          );
+          if (betSecond) {
+            newPts += points[MatchTypeEnum.GROUP].advances;
+            console.log(
+              `Group ${group.group} second points: ${
+                points[MatchTypeEnum.GROUP].advances
+              }`,
+            );
+          }
+        }
+        if (betWinnerInSecond) {
+          newPts += points[MatchTypeEnum.GROUP].advancesAsSecond;
+          console.log(
+            `Group ${group.group} winner as second points: ${
+              points[MatchTypeEnum.GROUP].advancesAsSecond
+            }`,
+          );
+        }
+        if (betSecondInFirst) {
+          newPts += points[MatchTypeEnum.GROUP].advancesAsSecond;
+          console.log(
+            `Group ${group.group} second as winner points: ${
+              points[MatchTypeEnum.GROUP].advancesAsSecond
+            }`,
+          );
+        }
+      }
+      return newPts;
+    }, 0);
+    return Promise.resolve(0);
   }
 
   public async getAll(): Promise<UserDTO[]> {
@@ -130,12 +207,13 @@ export class UserService {
           // Calculate matches points
           const matchesPts = this.calculateMatchesPoints(bets, matches);
 
-          // Calculate stage points
+          // Calculate group points
+          const groupsPts = await this.calculateGroupPoints(user.user_id);
 
           // Calculate champion points
 
           return {
-            pts: matchesPts,
+            pts: matchesPts + groupsPts,
             name: user.nickname || user.email,
             paid: user.app_metadata?.paid || false,
             groups: user.app_metadata?.groups || [],

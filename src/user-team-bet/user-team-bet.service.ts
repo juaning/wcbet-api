@@ -1,15 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
-import { DateTime } from 'luxon';
 import { UserTeamBet } from 'src/model/userTeamBet.entity';
 import { User } from 'src/user.decorator';
 import { CreateUserTeamBetDTO, UserTeamBetDTO } from './user-team-bet.dto';
-import {
-  canBetChamNGroups,
-  TeamBetTypeEnum,
-  wcStartDateTime,
-} from '../config/common';
+import { canBetChamNGroups, TeamBetTypeEnum } from '../config/common';
 
 @Injectable()
 export class UserTeamBetService {

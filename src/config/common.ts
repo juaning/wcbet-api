@@ -33,6 +33,7 @@ export enum MatchTypeEnum {
   THIRD_PLACE = '3RD',
   SEMIFINAL = 'SF',
   FINAL = 'FIN',
+  CHAMPION = 'CHAMPION',
 }
 
 export enum MatchTimeElapsedEnum {
@@ -51,10 +52,55 @@ export const ttl5min = 300 * 1000;
 export const ttl24h = 1000 * 60 * 60 * 24;
 export const fifaFlag =
   'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Gay_Pride_Flag.svg/2560px-Gay_Pride_Flag.svg.png';
-// 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Flag_of_FIFA.svg/1600px-Flag_of_FIFA.svg.png';
-export const points = {
-  group: {
-    groupWinOrDraw: 10,
-    groupResult: 20,
+
+export type IPoints = {
+  [key in MatchTypeEnum]: {
+    winOrDraw: number;
+    result: number;
+    advances?: number;
+    advancesAsSecond?: number;
+  };
+};
+export const points: IPoints = {
+  [MatchTypeEnum.GROUP]: {
+    winOrDraw: 10,
+    result: 20,
+    advances: 60,
+    advancesAsSecond: 40,
   },
+  [MatchTypeEnum.ROUND_OF_16]: {
+    winOrDraw: 100,
+    result: 100,
+  },
+  [MatchTypeEnum.QUARTERFINAL]: {
+    winOrDraw: 150,
+    result: 140,
+  },
+  [MatchTypeEnum.SEMIFINAL]: {
+    winOrDraw: 200,
+    result: 180,
+  },
+  [MatchTypeEnum.THIRD_PLACE]: {
+    winOrDraw: 200,
+    result: 180,
+  },
+  [MatchTypeEnum.FINAL]: {
+    winOrDraw: 250,
+    result: 250,
+  },
+  [MatchTypeEnum.CHAMPION]: {
+    winOrDraw: 0,
+    result: 270,
+  },
+};
+
+export const lastMatchDateTimePerGroup = {
+  A: '11/29/2022 20:10',
+  B: '11/30/2022 00:10',
+  C: '12/1/2022 00:10',
+  D: '11/30/2022 20:10',
+  E: '12/2/2022 00:10',
+  F: '12/1/2022 20:10',
+  G: '12/3/2022 00:10',
+  H: '12/2/2022 20:10',
 };
