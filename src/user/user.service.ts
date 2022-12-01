@@ -99,9 +99,13 @@ export class UserService {
         lastMatchDateTimePerGroup[group.group],
       );
       if (now >= groupEndDate) {
-        const sortedTeams = group.teams.sort(
-          (a, b) => Number(b.pts) - Number(a.pts),
-        );
+        const sortedTeams = group.teams.sort((a, b) => {
+          const ptsDiff = Number(b.pts) - Number(a.pts);
+          if (ptsDiff === 0) {
+            return Number(b.gd) - Number(a.gd);
+          }
+          return ptsDiff;
+        });
         const betWinner = groupWinners.find(
           (winner) => winner.teamId === sortedTeams[0].team_id,
         );
