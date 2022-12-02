@@ -24,6 +24,7 @@ export enum TeamBetTypeEnum {
   ROUND_OF_16,
   GROUP_WINNER,
   GROUP_SECOND,
+  FINAL,
 }
 
 export enum MatchTypeEnum {
@@ -31,7 +32,7 @@ export enum MatchTypeEnum {
   ROUND_OF_16 = 'R16',
   QUARTERFINAL = 'QR',
   THIRD_PLACE = '3RD',
-  SEMIFINAL = 'SF',
+  SEMIFINAL = 'semi',
   FINAL = 'FIN',
   CHAMPION = 'CHAMPION',
 }
@@ -69,24 +70,29 @@ export const points: IPoints = {
     advancesAsSecond: 40,
   },
   [MatchTypeEnum.ROUND_OF_16]: {
-    winOrDraw: 100,
+    winOrDraw: 60,
     result: 100,
+    advances: 100,
   },
   [MatchTypeEnum.QUARTERFINAL]: {
-    winOrDraw: 150,
-    result: 140,
+    winOrDraw: 100,
+    result: 150,
+    advances: 140,
   },
   [MatchTypeEnum.SEMIFINAL]: {
-    winOrDraw: 200,
-    result: 180,
+    winOrDraw: 140,
+    result: 200,
+    advances: 180,
   },
   [MatchTypeEnum.THIRD_PLACE]: {
-    winOrDraw: 200,
-    result: 180,
+    winOrDraw: 140,
+    result: 200,
+    advances: 180,
   },
   [MatchTypeEnum.FINAL]: {
-    winOrDraw: 250,
+    winOrDraw: 200,
     result: 250,
+    advances: 250,
   },
   [MatchTypeEnum.CHAMPION]: {
     winOrDraw: 0,
