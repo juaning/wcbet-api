@@ -121,7 +121,11 @@ export class UserService {
         const sortedTeams = group.teams.sort((a, b) => {
           const ptsDiff = Number(b.pts) - Number(a.pts);
           if (ptsDiff === 0) {
-            return Number(b.gd) - Number(a.gd);
+            const goalDiff = Number(b.gd) - Number(a.gd);
+            if (goalDiff === 0) {
+              return Number(b.gf) - Number(a.gf);
+            }
+            return goalDiff;
           }
           return ptsDiff;
         });
