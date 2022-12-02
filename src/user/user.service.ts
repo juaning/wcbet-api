@@ -43,6 +43,7 @@ export class UserService {
   private calculateMatchesPoints(
     bets: Array<UserMatchBetDTO>,
     matches: Array<IMatchDefinition>,
+    knockoutBets: Array<UserTeamBetDTO>,
   ): number {
     return bets.reduce<number>((pts, bet) => {
       const match = matches.find(
@@ -72,6 +73,24 @@ export class UserService {
           match.home_score === bet.homeScore;
         if (resultMatches) {
           newPts += points[match.type].result;
+        }
+
+        // Calculate stage points
+        if (match.type !== MatchTypeEnum.GROUP) {
+          const knockoutBet = knockoutBets.find(
+            (kbet) => kbet.matchId === match.id,
+          );
+          if (knockoutBet) {
+            console.log('There is a knockout bet');
+            const awayAdvances =
+              awayWon && match.away_team_id === knockoutBet.teamId;
+            const homeAdvances =
+              homeWon && match.home_team_id === knockoutBet.teamId;
+            if (awayAdvances || homeAdvances) {
+              console.log('Advances matches bet');
+              newPts += points[match.type].advances;
+            }
+          }
         }
         return newPts;
       }
@@ -208,8 +227,16 @@ export class UserService {
           // Fetch matches for bets
           const matches = await this.apiWC2022Service.getAllMatches();
 
+          // Fetch team bets for user
+          const knockoutBets =
+            await this.userTeamBetService.getTeamBetsByUserId(user.user_id);
+
           // Calculate matches points
-          const matchesPts = this.calculateMatchesPoints(bets, matches);
+          const matchesPts = this.calculateMatchesPoints(
+            bets,
+            matches,
+            knockoutBets,
+          );
 
           // Calculate group points
           const groupsPts = await this.calculateGroupPoints(user.user_id);
