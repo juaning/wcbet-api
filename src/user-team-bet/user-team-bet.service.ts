@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { UserTeamBet } from 'src/model/userTeamBet.entity';
@@ -53,6 +57,9 @@ export class UserTeamBetService {
       createdBy: user.id,
       matchId: matchId,
     });
+    if (!bet) {
+      throw new NotFoundException('No existe la apuesta.');
+    }
     return UserTeamBetDTO.fromEntity(bet);
   }
 
