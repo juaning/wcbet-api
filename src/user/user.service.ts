@@ -82,10 +82,11 @@ export class UserService {
           );
           if (knockoutBet) {
             console.log('There is a knockout bet');
+            const goalDiff = match.away_score - match.home_score;
             const awayAdvances =
-              awayWon && match.away_team_id === knockoutBet.teamId;
+              goalDiff > 0 && match.away_team_id === knockoutBet.teamId;
             const homeAdvances =
-              homeWon && match.home_team_id === knockoutBet.teamId;
+              goalDiff < 0 && match.home_team_id === knockoutBet.teamId;
             if (awayAdvances || homeAdvances) {
               console.log('Advances matches bet');
               newPts += points[match.type].advances;
