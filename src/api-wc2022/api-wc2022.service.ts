@@ -107,7 +107,7 @@ export class ApiWc2022Service {
 
     const { data } = await this.httpService.axiosRef.get('/standings');
     if (data.status === ApiStatusResponseEnum.Success) {
-      await this.cacheService.set('allStandings', data.data, ttl5min);
+      await this.cacheService.set('allStandings', data.data, ttl24h);
       console.log('All standings from 3rd party');
       return data.data;
     } else {
@@ -131,7 +131,7 @@ export class ApiWc2022Service {
       await this.cacheService.set(
         `groupStandings:${group}`,
         data.data[0],
-        ttl5min,
+        ttl24h,
       );
       console.log(`Group ${group} standings from 3rd party`);
       return data.data[0];
