@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { MatchTypeEnum } from '../config/common';
 import { ApiWc2022Controller } from './api-wc2022.controller';
 import { IMatchDefinition, ITeamDefinition } from './api-wc2022.interface';
 import { ApiWc2022Service } from './api-wc2022.service';
@@ -37,7 +38,7 @@ describe('ApiWc2022Controller', () => {
         persian_date: '1400-08-30 19:30',
         stadium_id: '1',
         time_elapsed: 'finished',
-        type: 'group',
+        type: MatchTypeEnum.GROUP,
         home_team_fa: 'سنگال',
         away_team_fa: 'هلند',
         home_team_en: 'Senegal',

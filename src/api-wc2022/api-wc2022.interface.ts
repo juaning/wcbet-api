@@ -53,7 +53,7 @@ export class IMatchDefinition {
   id: string;
   @IsEnum(MatchDefinedEnum)
   @ApiPropertyOptional({ description: 'Describes how the match was defined' })
-  matchDefined: MatchDefinedEnum;
+  matchDefined?: MatchDefinedEnum;
   @ApiProperty({ type: String })
   local_date: string;
   @ApiProperty({ type: String })
