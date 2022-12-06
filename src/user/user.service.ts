@@ -23,6 +23,7 @@ import { UserMatchBetDTO } from '../user-match-bet/user-match-bet.dto';
 import { IMatchDefinition } from '../api-wc2022/api-wc2022.interface';
 import { UserTeamBetService } from '../user-team-bet/user-team-bet.service';
 import { UserTeamBetDTO } from '../user-team-bet/user-team-bet.dto';
+import { MatchDefinedEnum } from '../api-wc2022/common';
 
 dotenv.config();
 
@@ -82,11 +83,26 @@ export class UserService {
           );
           if (knockoutBet) {
             console.log('There is a knockout bet');
-            const goalDiff = match.away_score - match.home_score;
+            let goalDiff = 0;
+            switch (match.matchDefined) {
+              case MatchDefinedEnum.EXTRA_TIME:
+                goalDiff =
+                  match.away_extra_time_score - match.home_extra_time_score;
+                break;
+              case MatchDefinedEnum.PENALTIES:
+                goalDiff =
+                  match.away_penalties_score - match.home_penalties_score;
+                break;
+              case MatchDefinedEnum.REGULAR:
+              default:
+                goalDiff = match.away_score - match.home_score;
+            }
+
             const awayAdvances =
               goalDiff > 0 && match.away_team_id === knockoutBet.teamId;
             const homeAdvances =
               goalDiff < 0 && match.home_team_id === knockoutBet.teamId;
+
             if (awayAdvances || homeAdvances) {
               console.log('Advances matches bet');
               newPts += points[match.type].advances;
