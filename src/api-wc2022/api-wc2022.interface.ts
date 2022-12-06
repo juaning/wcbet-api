@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ApiStatusResponseEnum } from './common';
+import { IsEnum } from 'class-validator';
+import { MatchTypeEnum } from '../config/common';
+import { ApiStatusResponseEnum, MatchDefinedEnum } from './common';
 
 export class ITeamDefinition {
   @ApiProperty({ type: String })
@@ -23,8 +25,12 @@ export class ITeamDefinition {
 export class IMatchDefinition {
   @ApiProperty({ type: String })
   _id: string;
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: Number })
   away_score: number;
+  @ApiPropertyOptional({ type: Number })
+  away_extra_time_score?: number;
+  @ApiPropertyOptional({ type: Number })
+  away_penalties_score?: number;
   @ApiProperty({ type: Array<string> })
   away_scorers: Array<string>;
   @ApiProperty({ type: String })
@@ -35,24 +41,32 @@ export class IMatchDefinition {
   group: string;
   @ApiProperty({ type: Number })
   home_score: number;
+  @ApiPropertyOptional({ type: Number })
+  home_extra_time_score?: number;
+  @ApiPropertyOptional({ type: Number })
+  home_penalties_score?: number;
   @ApiProperty({ type: Array<string> })
   home_scorers: Array<string>;
   @ApiProperty({ type: String })
   home_team_id: string;
   @ApiProperty({ type: String })
   id: string;
+  @IsEnum(MatchDefinedEnum)
+  @ApiPropertyOptional({ description: 'Describes how the match was defined' })
+  matchDefined?: MatchDefinedEnum;
   @ApiProperty({ type: String })
   local_date: string;
-  @ApiProperty({ type: Number })
-  matchday: number;
+  @ApiProperty({ type: String })
+  matchday: string;
   @ApiProperty({ type: String })
   persian_date: string;
   @ApiProperty({ type: String })
   stadium_id: string;
   @ApiProperty({ type: String })
   time_elapsed: string;
-  @ApiProperty({ type: String })
-  type: string; // We might be able to change this to ENUM
+  @IsEnum(MatchTypeEnum)
+  @ApiProperty({ description: 'Match stage type' })
+  type: MatchTypeEnum;
   @ApiProperty({ type: String })
   home_team_fa: string;
   @ApiProperty({ type: String })

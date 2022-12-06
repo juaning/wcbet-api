@@ -6,8 +6,8 @@ import {
   IStandingDefinition,
   ITeamDefinition,
 } from './api-wc2022.interface';
-import { ApiStatusResponseEnum } from './common';
-import { ttl5min, ttl24h } from '../config/common';
+import { ApiStatusResponseEnum, resultsKnockout } from './common';
+import { ttl5min, ttl24h, MatchTypeEnum } from '../config/common';
 
 @Injectable()
 export class ApiWc2022Service {
@@ -48,9 +48,18 @@ export class ApiWc2022Service {
 
     const { data } = await this.httpService.axiosRef.get('/match');
     if (data.status === ApiStatusResponseEnum.Success) {
-      await this.cacheService.set('allMatches', data.data, ttl5min);
+      // Check if is not groups and we've got it on our tie breaker
+      const matches = data.data.map((match) => {
+        if (match.type !== MatchTypeEnum.GROUP) {
+          if (resultsKnockout[match.id]) {
+            return resultsKnockout[match.id];
+          }
+        }
+        return match;
+      });
+      await this.cacheService.set('allMatches', matches, ttl5min);
       console.info('All matches from 3rd party');
-      return data.data;
+      return matches;
     } else {
       throw new Error(data.message);
     }
