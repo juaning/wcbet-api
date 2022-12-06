@@ -51,7 +51,9 @@ export class ApiWc2022Service {
       // Check if is not groups and we've got it on our tie breaker
       const matches = data.data.map((match) => {
         if (match.type !== MatchTypeEnum.GROUP) {
+          console.log('Not a group game, checking if needs to update');
           if (resultsKnockout[match.id]) {
+            console.log('Updating with knockout data for:', match.id);
             return resultsKnockout[match.id];
           }
         }
