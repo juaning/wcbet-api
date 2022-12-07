@@ -3,13 +3,21 @@ import { CACHE_MANAGER } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MatchTypeEnum } from '../config/common';
 import { ApiWc2022Controller } from './api-wc2022.controller';
-import { IMatchDefinition, ITeamDefinition } from './api-wc2022.interface';
+import {
+  IMatchDefinition,
+  IStandingDefinition,
+  ITeamDefinition,
+} from './api-wc2022.interface';
 import { ApiWc2022Service } from './api-wc2022.service';
 
 describe('ApiWc2022Controller', () => {
   let controller: ApiWc2022Controller;
   let service: ApiWc2022Service;
   let matches: IMatchDefinition[];
+  let matchesByDay: {
+    [key: number]: IMatchDefinition[];
+  } = undefined;
+  let standings: IStandingDefinition[];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -49,6 +57,75 @@ describe('ApiWc2022Controller', () => {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/125px-Flag_of_the_Netherlands.svg.png',
       },
     ];
+
+    matchesByDay = {
+      0: matches,
+    };
+
+    standings = [
+      {
+        _id: '629c9c7c5749c4077500eaca',
+        group: 'A',
+        teams: [
+          {
+            team_id: '1',
+            mp: '3',
+            w: '0',
+            l: '3',
+            pts: '0',
+            gf: '1',
+            ga: '7',
+            gd: '-6',
+            d: '0',
+            name_fa: 'قطر',
+            name_en: 'Qatar',
+            flag: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Flag_of_Qatar.svg/125px-Flag_of_Qatar.svg.png',
+          },
+          {
+            team_id: '2',
+            mp: '3',
+            w: '1',
+            l: '1',
+            pts: '4',
+            gf: '4',
+            ga: '3',
+            gd: '1',
+            d: '1',
+            name_fa: 'اکوادور',
+            name_en: 'Ecuador',
+            flag: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Flag_of_Ecuador.svg/125px-Flag_of_Ecuador.svg.png',
+          },
+          {
+            team_id: '3',
+            mp: '3',
+            w: '2',
+            l: '1',
+            pts: '6',
+            gf: '5',
+            ga: '4',
+            gd: '1',
+            d: '0',
+            name_fa: 'سنگال',
+            name_en: 'Senegal',
+            flag: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Flag_of_Senegal.svg/125px-Flag_of_Senegal.svg.png',
+          },
+          {
+            team_id: '4',
+            mp: '3',
+            w: '2',
+            l: '0',
+            pts: '7',
+            gf: '5',
+            ga: '1',
+            gd: '4',
+            d: '1',
+            name_fa: 'هلند',
+            name_en: 'Netherlands',
+            flag: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/125px-Flag_of_the_Netherlands.svg.png',
+          },
+        ],
+      },
+    ];
   });
 
   describe('Get all teams', () => {
@@ -80,6 +157,37 @@ describe('ApiWc2022Controller', () => {
         .mockImplementation(() => Promise.resolve(matches));
 
       expect(await controller.getAllMatches()).toBe(matches);
+    });
+
+    it('should return all matches by day', async () => {
+      jest
+        .spyOn(service, 'getMatchesByMatchDay')
+        .mockImplementation((day) => Promise.resolve(matchesByDay[day]));
+      expect(await controller.getMatchesByDay(0)).toStrictEqual(matches);
+      expect(service.getMatchesByMatchDay).toBeCalledWith(0);
+    });
+
+    it('should return match by id', async () => {
+      jest
+        .spyOn(service, 'getMatchById')
+        .mockImplementation((id) => Promise.resolve(matches[id]));
+      expect(await controller.getMatchById(0)).toStrictEqual(matches[0]);
+      expect(service.getMatchById).toHaveBeenCalledWith(0);
+    });
+  });
+
+  describe('Standings', () => {
+    it('should return all standings', async () => {
+      jest.spyOn(service, 'getAllStandings').mockResolvedValue(standings);
+      expect(await controller.getAllStandings()).toBe(standings);
+    });
+
+    it('should return group standing', async () => {
+      jest
+        .spyOn(service, 'getStandingsByGroup')
+        .mockResolvedValue(standings[0]);
+      expect(await controller.getStandingsByGroup('a')).toBe(standings[0]);
+      expect(service.getStandingsByGroup).toHaveBeenCalledWith('A');
     });
   });
 });
