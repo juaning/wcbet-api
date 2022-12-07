@@ -10,11 +10,11 @@ class ApiServiceMock {
     return [];
   }
 
-  getMatchesByMatchDay(_day) {
+  getMatchesByMatchDay(_day: number) {
     return [];
   }
 
-  getMatchById(_id) {
+  getMatchById(_id: number) {
     return {};
   }
 
@@ -22,7 +22,7 @@ class ApiServiceMock {
     return [];
   }
 
-  getStandingsByGroup(group) {
+  getStandingsByGroup(_group: string) {
     return {};
   }
 }
