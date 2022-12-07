@@ -91,6 +91,8 @@ export class IStandingTeamDefinition {
   @ApiProperty({ type: String })
   l: string;
   @ApiProperty({ type: String })
+  d: string;
+  @ApiProperty({ type: String })
   pts: string;
   @ApiProperty({ type: String })
   gf: string;
@@ -107,6 +109,8 @@ export class IStandingTeamDefinition {
 }
 
 export class IStandingDefinition {
+  @ApiProperty({ type: String })
+  _id: string;
   @ApiProperty({ type: String })
   group: string;
   @ApiProperty({ type: Array<IStandingTeamDefinition> })
